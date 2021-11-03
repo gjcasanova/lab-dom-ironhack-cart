@@ -45,11 +45,22 @@ function calculateAll() {
 
   // ITERATION 2
   //... your code goes here
+
+  // Obtenermos todos los elementos con la clase 'product' (Todas las filas de la tabla).
   const productsList = document.querySelectorAll('.product');
-  productsList.forEach(updateSubtotal);
+  // Iniciamos una variable para obtener el total general de todos los productos.
+  let total = 0;
+  // Recorremos todos los productos, actualizamos los valores en la tabla y sumamos cada subtotal al total.
+  productsList.forEach((product) => {
+    total += updateSubtotal(product);
+  });
 
   // ITERATION 3
   //... your code goes here
+
+  // Escribimos el total en el elemento html correspondiente.
+  document.getElementById('total-value').childNodes[1].innerText =
+    total.toFixed(2);
 }
 
 // ITERATION 4
