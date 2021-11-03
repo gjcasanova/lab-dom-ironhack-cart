@@ -69,13 +69,57 @@ function removeProduct(event) {
   const target = event.currentTarget;
   console.log('The target in remove is:', target);
   //... your code goes here
-  target.parentNode.parentNode.parentNode.removeChild(target.parentNode.parentNode);
+
+  // Escalo hasta el nodo padre y borro el hijo seleccionado.
+  target.parentNode.parentNode.parentNode.removeChild(
+    target.parentNode.parentNode
+  );
 }
 
 // ITERATION 5
 
-function createProduct() {
+function createProduct(event) {
   //... your code goes here
+  // Selecciono el elemento que contiene los datos a insertar.
+  const elementToInsert = document.getElementsByClassName('create-product')[0];
+  // Selecciono todos los elementos del tipo 'input' porque son los que contienen los datos del nuevo producto.
+  const inputElements = elementToInsert.getElementsByTagName('input');
+  // Obtengo el nombre y el precio unitario del producto.
+  const productName = inputElements[0].value;
+  const productPrice = parseFloat(inputElements[1].value);
+  // Limpio las cajas de texto para un nuevo ingreso.
+  inputElements[0].value = '';
+  inputElements[1].value = 0;
+
+  // Defino el fragmento html que se va a insertar en la tabla, e incluyo los datos del nuevo producto.
+  let htmlToInsert = `
+  <td class="name">
+    <span>${productName}</span>
+  </td>
+  <td class="price">$<span>${productPrice}</span></td>
+  <td class="quantity">
+    <input type="number" value="0" min="0" placeholder="Quantity" />
+  </td>
+  <td class="subtotal">$<span>0</span></td>
+  <td class="action">
+    <button class="btn btn-remove">Remove</button>
+  </td>
+  `;
+
+  // Obtengo la referencia del tbody de la tabla en la que voy a insertar la nueva fila.
+  let table = document.getElementById('cart').getElementsByTagName('tbody')[0];
+  // Creo una nueva fila al final del tbody.
+  row = table.insertRow();
+  // Es importante definir el className para que sea tomada en cuenta en la suma del total.
+  row.className = 'product';
+  // Agrego el fragmento html en la fila insertada al final del tbody.
+  row.innerHTML = htmlToInsert;
+  //   El botón de eliminar no funciona sin la siguiente línea. Esto se debe a que la asignación de eventos se hace al cargar la
+  // página, por lo que el nuevo botón no tiene escucha del evento click, y por eso debemos definirlo manualmente al momento de
+  // crearlo.
+  btn = row
+    .getElementsByClassName('action')[0]
+    .childNodes[1].addEventListener('click', removeProduct);
 }
 
 window.addEventListener('load', () => {
@@ -83,8 +127,12 @@ window.addEventListener('load', () => {
   calculatePricesBtn.addEventListener('click', calculateAll);
 
   //... your code goes here
+  // Para cada botón de eliminar agregamos un escucha de eventos para que se active cada vez que se haga click en uno de estos botones.
+  // Por medio del evento se puede conocer cuál fue el botón en el que se hizo click, y esta información ayudará a saber qué elemento eliminar.
   const removeElementBtns = document.getElementsByClassName('btn-remove');
   for (let i = 0; i < removeElementBtns.length; i++) {
     removeElementBtns[i].addEventListener('click', removeProduct);
   }
+
+  document.getElementById('create').addEventListener('click', createProduct);
 });
